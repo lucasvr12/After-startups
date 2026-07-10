@@ -1,45 +1,95 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900;1000&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
 
-  html, body, #root {
-    background-color: #0C0C0C;
-    color: #D7E2EA;
-    font-family: 'Kanit', sans-serif;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+:root {
+  color-scheme: dark;
+  font-family: 'Inter', sans-serif;
+  scroll-behavior: smooth;
 }
 
-.hero-heading {
-  background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0A0A0A;
+  color: #D7E2EA;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar for Dark Aesthetic */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0C0C0C;
+  background: #0A0A0A;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #222222;
-  border-radius: 3px;
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #333333;
+  background: #B600A8;
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+  background: rgba(16, 16, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(24, 24, 30, 0.8);
+  border-color: rgba(182, 0, 168, 0.3);
+  box-shadow: 0 10px 30px rgba(182, 0, 168, 0.1), inset 0 0 15px rgba(182, 0, 168, 0.05);
+  transform: translateY(-4px);
+}
+
+/* Text glow effects */
+.text-glow-purple {
+  text-shadow: 0 0 15px rgba(182, 0, 168, 0.4);
+}
+
+.text-glow-orange {
+  text-shadow: 0 0 15px rgba(190, 76, 0, 0.4);
+}
+
+/* Radial backdrops */
+.bg-radial-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(118, 33, 176, 0.15) 0%, transparent 60%);
+}
+
+.bg-radial-glow-orange {
+  background: radial-gradient(circle at 50% 50%, rgba(190, 76, 0, 0.1) 0%, transparent 65%);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(123deg, #FFFFFF 20%, #B600A8 60%, #7621B0 90%, #BE4C00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Custom styles for Hero header */
+.hero-heading {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.04em;
+  background: linear-gradient(to right, #ffffff 30%, #e2e8f0 70%, rgba(255, 255, 255, 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

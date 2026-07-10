@@ -1,691 +1,1062 @@
-import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowRight, 
+  ArrowDown, 
+  TrendingUp, 
+  Layers, 
+  Cpu, 
+  Bot, 
+  Calendar, 
+  Mail, 
+  Sparkles, 
+  CheckCircle2, 
+  Menu, 
+  X,
+  MapPin,
+  ExternalLink,
+  Rocket
+} from 'lucide-react';
 
 // ==========================================
-// 1. REUSABLE COMPONENTS
+// 1. REUSABLE MICRO-INTERACTIVE COMPONENTS
 // ==========================================
 
-// Gradient Contact Button
-export const ContactButton = () => {
-  return (
-    <a
-      href="mailto:hello@afterstartups.agency"
-      className="rounded-full font-semibold uppercase tracking-widest text-white px-8 py-3 sm:px-10 sm:py-3.5 md:px-12 md:py-4 text-xs sm:text-sm md:text-base transition-transform hover:scale-[1.03] active:scale-[0.98] inline-block text-center select-none"
-      style={{
-        background: 'linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)',
-        boxShadow: '0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1',
-        outline: '2px solid white',
-        outlineOffset: '-3px'
-      }}
-    >
-      Contact Me
-    </a>
-  )
+// Magnetic Element Wrapper
+interface MagneticProps {
+  children: React.ReactNode;
+  range?: number;
+  strength?: number;
 }
 
-// Outline Ghost Button for Projects
-interface LiveProjectButtonProps {
-  href: string
-}
-
-export const LiveProjectButton = ({ href }: LiveProjectButtonProps) => {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="rounded-full border-2 border-[#D7E2EA] text-[#D7E2EA] font-semibold uppercase tracking-widest px-8 py-3 sm:px-10 sm:py-3.5 text-sm sm:text-base hover:bg-[#D7E2EA]/10 transition-colors inline-block text-center select-none"
-    >
-      Live Project
-    </a>
-  )
-}
-
-// FadeIn Viewport Trigger Component
-interface FadeInProps {
-  children: React.ReactNode
-  delay?: number
-  duration?: number
-  x?: number
-  y?: number
-  as?: string
-  className?: string
-}
-
-export const FadeIn = ({
-  children,
-  delay = 0,
-  duration = 0.7,
-  x = 0,
-  y = 30,
-  as = 'div',
-  className = ''
-}: FadeInProps) => {
-  const MotionComponent = (motion as any)[as] || motion.div
-  return (
-    <MotionComponent
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "50px", amount: 0 }}
-      transition={{
-        delay,
-        duration,
-        ease: [0.25, 0.1, 0.25, 1]
-      }}
-      className={className}
-    >
-      {children}
-    </MotionComponent>
-  )
-}
-
-// Mouse-following Magnetic Hover Component
-interface MagnetProps {
-  children: React.ReactNode
-  padding?: number
-  strength?: number
-  activeTransition?: string
-  inactiveTransition?: string
-}
-
-export const Magnet = ({
-  children,
-  padding = 150,
-  strength = 3,
-  activeTransition = "transform 0.3s ease-out",
-  inactiveTransition = "transform 0.6s ease-in-out"
-}: MagnetProps) => {
-  const [transform, setTransform] = useState({ x: 0, y: 0 })
-  const [isHovered, setIsHovered] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+export const Magnetic: React.FC<MagneticProps> = ({ children, range = 100, strength = 4 }) => {
+  const [transform, setTransform] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!ref.current) return
-      const rect = ref.current.getBoundingClientRect()
-      const elementCenterX = rect.left + rect.width / 2
-      const elementCenterY = rect.top + rect.height / 2
-      const distanceX = e.clientX - elementCenterX
-      const distanceY = e.clientY - elementCenterY
-      const distance = Math.hypot(distanceX, distanceY)
-      
-      const maxRange = Math.max(rect.width, rect.height) / 2 + padding
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
 
-      if (distance < maxRange) {
-        setIsHovered(true)
+      if (distance < range) {
+        setIsHovered(true);
         setTransform({
-          x: distanceX / strength,
-          y: distanceY / strength
-        })
+          x: (e.clientX - centerX) / strength,
+          y: (e.clientY - centerY) / strength
+        });
       } else {
-        setIsHovered(false)
-        setTransform({ x: 0, y: 0 })
+        setIsHovered(false);
+        setTransform({ x: 0, y: 0 });
       }
-    }
+    };
 
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [padding, strength])
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [range, strength]);
 
   return (
     <div
       ref={ref}
       style={{
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        transition: isHovered ? activeTransition : inactiveTransition,
+        transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
         willChange: 'transform',
         display: 'inline-block'
       }}
     >
       {children}
     </div>
-  )
+  );
+};
+
+// Scroll Reveal Wrapper
+interface RevealProps {
+  children: React.ReactNode;
+  delay?: number;
+  direction?: 'up' | 'down' | 'left' | 'right';
+  duration?: number;
 }
 
-// Character-by-character Scroll Opacity Animation Component
-interface AnimatedTextProps {
-  text: string
-  className?: string
-  style?: React.CSSProperties
-}
-
-export const AnimatedText = ({ text, className = '', style = {} }: AnimatedTextProps) => {
-  const containerRef = useRef<HTMLParagraphElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start 0.8', 'end 0.2']
-  })
-
-  // Split by words to prevent word clipping/wrapping in half
-  const words = text.split(" ")
-  
-  // Calculate total characters to map scroll progress correctly
-  const totalChars = words.reduce((acc, word) => acc + word.length, 0)
-  let charIndexCounter = 0
+export const Reveal: React.FC<RevealProps> = ({ children, delay = 0, direction = 'up', duration = 0.6 }) => {
+  const getInitialOffset = () => {
+    switch (direction) {
+      case 'up': return { y: 40, x: 0 };
+      case 'down': return { y: -40, x: 0 };
+      case 'left': return { x: 40, y: 0 };
+      case 'right': return { x: -40, y: 0 };
+    }
+  };
 
   return (
-    <p 
-      ref={containerRef} 
-      className={`flex flex-wrap justify-center text-center leading-relaxed font-medium ${className}`}
-      style={style}
+    <motion.div
+      initial={{ opacity: 0, ...getInitialOffset() }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{
+        delay,
+        duration,
+        ease: [0.215, 0.61, 0.355, 1] // cubic-out
+      }}
     >
-      {words.map((word, wIdx) => {
-        const wordChars = word.split("")
-        
-        return (
-          <span key={wIdx} className="inline-block whitespace-nowrap mr-[0.25em] last:mr-0">
-            {wordChars.map((char) => {
-              const currentCharIndex = charIndexCounter
-              charIndexCounter++
-              
-              const start = currentCharIndex / totalChars
-              const end = (currentCharIndex + 1) / totalChars
-              const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1])
+      {children}
+    </motion.div>
+  );
+};
 
-              return (
-                <span key={currentCharIndex} className="relative inline-block select-none">
-                  <span className="opacity-0">{char}</span>
-                  <motion.span style={{ opacity }} className="absolute inset-0">
-                    {char}
-                  </motion.span>
-                </span>
-              )
-            })}
-          </span>
-        )
-      })}
-    </p>
-  )
+// Word-by-word opacity text reveal
+interface RevealTextProps {
+  text: string;
+  className?: string;
 }
 
+export const RevealText: React.FC<RevealTextProps> = ({ text, className = '' }) => {
+  const containerRef = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start 0.85', 'end 0.3']
+  });
+
+  const words = text.split(' ');
+  
+  return (
+    <p ref={containerRef} className={`flex flex-wrap ${className}`}>
+      {words.map((word, wIdx) => {
+        const start = wIdx / words.length;
+        const end = (wIdx + 1) / words.length;
+        const opacity = useTransform(scrollYProgress, [start, end], [0.15, 1]);
+
+        return (
+          <span key={wIdx} className="relative mr-[0.25em] inline-block">
+            <span className="opacity-0">{word}</span>
+            <motion.span style={{ opacity }} className="absolute inset-0 select-none">
+              {word}
+            </motion.span>
+          </span>
+        );
+      })}
+    </p>
+  );
+};
 
 // ==========================================
-// 2. SECTIONS
+// 2. CORE SECTIONS
 // ==========================================
+
+// Navbar Component
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const links = [
+    { name: 'Manifiesto', href: '#manifesto' },
+    { name: 'Capacidades', href: '#capacidades' },
+    { name: 'Enfoque', href: '#enfoque' },
+    { name: 'Proyectos', href: '#projects' },
+    { name: 'Proceso', href: '#proceso' },
+  ];
+
+  return (
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'py-4 bg-[#0A0A0AD0] backdrop-blur-md border-b border-white/5' : 'py-6 bg-transparent'}`}>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+        {/* Logo */}
+        <a href="#hero" className="font-black text-xl tracking-tight text-white flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+          <motion.div
+            animate={{ 
+              y: [0, -4, 0],
+              x: [0, 1.5, 0],
+              rotate: [0, 5, -3, 0]
+            }}
+            transition={{ 
+              duration: 2.8, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+            className="text-accent-purple shrink-0"
+          >
+            <Rocket size={20} className="transform -rotate-12" />
+          </motion.div>
+          <div className="flex items-center gap-1.5">
+            <span>AFTER</span>
+            <span className="text-neutral-400 font-light">STARTUPS</span>
+          </div>
+        </a>
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-8">
+          {links.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href} 
+              className="text-xs uppercase tracking-widest text-neutral-400 hover:text-white font-semibold transition-colors duration-200"
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+
+        {/* Contact CTA (Desktop) */}
+        <div className="hidden md:block">
+          <Magnetic>
+            <a 
+              href="#contact" 
+              className="px-6 py-2.5 rounded-full border border-white/10 hover:border-accent-purple text-xs font-bold uppercase tracking-wider text-white transition-all bg-white/5 hover:bg-accent-purple/10"
+            >
+              Iniciar Proyecto
+            </a>
+          </Magnetic>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button 
+          onClick={() => setIsOpen(!isOpen)} 
+          className="md:hidden text-white p-1 focus:outline-none"
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden w-full bg-[#0A0A0A] border-b border-white/5"
+          >
+            <div className="px-6 py-8 flex flex-col gap-6">
+              {links.map((link) => (
+                <a 
+                  key={link.name} 
+                  href={link.href} 
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm uppercase tracking-widest text-neutral-300 hover:text-white font-bold"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <a 
+                href="#contact"
+                onClick={() => setIsOpen(false)}
+                className="w-full text-center py-3 rounded-full bg-accent-purple text-xs font-bold uppercase tracking-wider text-white"
+              >
+                Iniciar Proyecto
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+};
 
 // Hero Section
 const HeroSection = () => {
   return (
-    <section className="relative h-screen w-full flex flex-col justify-between overflow-hidden px-6 md:px-10 pb-7 sm:pb-8 md:pb-10 bg-[#0C0C0C]">
-      {/* Navbar */}
-      <FadeIn delay={0} y={-20} as="nav" className="w-full flex justify-between items-center pt-6 md:pt-8 z-30">
-        <a href="#about" className="text-[#D7E2EA] font-medium uppercase tracking-wider text-sm md:text-lg lg:text-[1.4rem] hover:opacity-70 transition-opacity duration-200">
-          About
-        </a>
-        <a href="#services" className="text-[#D7E2EA] font-medium uppercase tracking-wider text-sm md:text-lg lg:text-[1.4rem] hover:opacity-70 transition-opacity duration-200">
-          Services
-        </a>
-        <a href="#projects" className="text-[#D7E2EA] font-medium uppercase tracking-wider text-sm md:text-lg lg:text-[1.4rem] hover:opacity-70 transition-opacity duration-200">
-          Projects
-        </a>
-        <a href="#contact" className="text-[#D7E2EA] font-medium uppercase tracking-wider text-sm md:text-lg lg:text-[1.4rem] hover:opacity-70 transition-opacity duration-200">
-          Contact
-        </a>
-      </FadeIn>
-
-      {/* Hero Heading Container - Adjusted size to avoid clipping */}
-      <div className="w-full overflow-hidden z-20 flex justify-center items-center mt-6 sm:mt-4 md:-mt-5">
-        <FadeIn delay={0.15} y={40} className="w-full text-center">
-          <h1 
-            className="hero-heading font-black uppercase tracking-tight leading-[1.1] whitespace-nowrap w-full text-center"
-            style={{ fontSize: 'clamp(2rem, 6.6vw, 120px)' }}
-          >
-            after startups
-          </h1>
-        </FadeIn>
-      </div>
-
-      {/* Interactive Magnet Rocket Portrait (Mobile centered, Desktop pinned bottom) */}
-      <div 
-        className="absolute left-1/2 -translate-x-1/2 z-10 w-[280px] sm:w-[360px] md:w-[440px] lg:w-[520px] top-1/2 -translate-y-1/2 sm:top-auto sm:translate-y-0 sm:bottom-0"
-      >
-        <FadeIn delay={0.6} y={30} className="w-full flex justify-center">
-          <Magnet padding={150} strength={3}>
-            <img
-              src="/rocket_takeoff.png"
-              alt="Rocket taking off from Earth"
-              className="w-full h-auto object-contain select-none pointer-events-none"
-            />
-          </Magnet>
-        </FadeIn>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="w-full flex justify-between items-end z-20">
-        {/* Left tagline */}
-        <FadeIn delay={0.35} y={20}>
-          <p className="text-[#D7E2EA] font-light uppercase tracking-wide leading-snug text-left max-w-[160px] sm:max-w-[220px] md:max-w-[260px]" style={{ fontSize: 'clamp(0.75rem, 1.4vw, 1.5rem)' }}>
-            a venture studio driven by crafting striking and unforgettable projects
-          </p>
-        </FadeIn>
-
-        {/* Right Contact button */}
-        <FadeIn delay={0.5} y={20}>
-          <ContactButton />
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-// Marquee Section
-const row1Images = [
-  "https://motionsites.ai/assets/hero-space-voyage-preview-eECLH3Yc.gif",
-  "https://motionsites.ai/assets/hero-codenest-preview-Cgppc2qV.gif",
-  "https://motionsites.ai/assets/hero-vex-ventures-preview-BczMFIiw.gif",
-  "https://motionsites.ai/assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif",
-  "https://motionsites.ai/assets/hero-asme-preview-B_nGDnTP.gif",
-  "https://motionsites.ai/assets/hero-transform-data-preview-Cx5OU29N.gif",
-  "https://motionsites.ai/assets/hero-vitara-preview-Cjz2QYyU.gif",
-  "https://motionsites.ai/assets/hero-terra-preview-BFjrCr7T.gif",
-  "https://motionsites.ai/assets/hero-skyelite-preview-DHaZIgUv.gif",
-  "https://motionsites.ai/assets/hero-aethera-preview-DknSlcTa.gif",
-  "https://motionsites.ai/assets/hero-designpro-preview-D8c5_een.gif"
-]
-
-const row2Images = [
-  "https://motionsites.ai/assets/hero-stellar-ai-preview-D3HL6bw1.gif",
-  "https://motionsites.ai/assets/hero-xportfolio-preview-D4A8maiC.gif",
-  "https://motionsites.ai/assets/hero-orbit-web3-preview-BXt4OttD.gif",
-  "https://motionsites.ai/assets/hero-nexora-preview-cx5HmUgo.gif",
-  "https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif",
-  "https://motionsites.ai/assets/hero-planet-orbit-preview-DWAP8Z1P.gif",
-  "https://motionsites.ai/assets/hero-new-era-preview-CocuDUm9.gif",
-  "https://motionsites.ai/assets/hero-wealth-preview-B70idl_u.gif",
-  "https://motionsites.ai/assets/hero-luminex-preview-CxOP7ce6.gif",
-  "https://motionsites.ai/assets/hero-celestia-preview-0yO3jXO8.gif"
-]
-
-const MarqueeSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const [scrollY, setScrollY] = useState(0)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
-  const sectionTop = sectionRef.current ? sectionRef.current.offsetTop : 0
-  const offset = (scrollY - sectionTop + window.innerHeight) * 0.3
-
-  const transformRow1 = `translateX(${offset - 200}px)`
-  const transformRow2 = `translateX(${-(offset - 200)}px)`
-
-  const tripledRow1 = [...row1Images, ...row1Images, ...row1Images]
-  const tripledRow2 = [...row2Images, ...row2Images, ...row2Images]
-
-  return (
-    <section ref={sectionRef} className="w-full bg-[#0C0C0C] pt-24 sm:pt-32 md:pt-40 pb-10 overflow-hidden flex flex-col gap-3">
-      {/* Row 1 */}
-      <div className="w-full overflow-hidden">
-        <div
-          style={{
-            transform: transformRow1,
-            willChange: 'transform',
-            display: 'flex',
-            gap: '12px',
-            width: 'max-content'
-          }}
-          className="transition-transform duration-75 ease-out"
-        >
-          {tripledRow1.map((url, idx) => (
-            <img
-              key={`r1-${idx}`}
-              src={url}
-              alt={`Client Project ${idx}`}
-              loading="lazy"
-              className="w-[420px] h-[270px] rounded-2xl object-cover shrink-0"
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Row 2 */}
-      <div className="w-full overflow-hidden">
-        <div
-          style={{
-            transform: transformRow2,
-            willChange: 'transform',
-            display: 'flex',
-            gap: '12px',
-            width: 'max-content'
-          }}
-          className="transition-transform duration-75 ease-out"
-        >
-          {tripledRow2.map((url, idx) => (
-            <img
-              key={`r2-${idx}`}
-              src={url}
-              alt={`Digital Project ${idx}`}
-              loading="lazy"
-              className="w-[420px] h-[270px] rounded-2xl object-cover shrink-0"
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// About Section
-const AboutSection = () => {
-  return (
-    <section id="about" className="relative min-h-screen w-full bg-[#0C0C0C] flex flex-col justify-center items-center px-5 sm:px-8 md:px-10 py-20 text-center overflow-hidden z-20">
+    <section id="hero" className="relative min-h-screen w-full flex flex-col justify-center items-center px-6 md:px-12 pt-28 pb-20 overflow-hidden bg-[#0A0A0A]">
+      {/* Dynamic Background Glows */}
+      <div className="absolute top-[20%] left-[10%] w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-radial-glow opacity-60 pointer-events-none z-0"></div>
+      <div className="absolute bottom-[20%] right-[10%] w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-radial-glow-orange opacity-40 pointer-events-none z-0"></div>
       
-      {/* Absolute Decorative 3D Images in Corners */}
-      {/* Top Left: Moon */}
-      <div className="absolute top-[4%] left-[1%] sm:left-[2%] md:left-[4%] z-10 pointer-events-none">
-        <FadeIn delay={0.1} x={-80} y={0} duration={0.9}>
-          <img
-            src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png"
-            alt="Moon Icon"
-            className="w-[120px] sm:w-[160px] md:w-[210px] h-auto object-contain"
-          />
-        </FadeIn>
+      {/* Decorative Interactive Floating Cards */}
+      <div className="absolute top-[30%] right-[8%] hidden xl:block pointer-events-none z-10">
+        <motion.div 
+          animate={{ y: [0, -15, 0], rotate: [0, 2, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="glass-panel p-6 rounded-2xl w-72 border border-white/5 shadow-2xl"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-accent-purple">AI Agent status</span>
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+          </div>
+          <p className="text-xs text-neutral-300 font-mono leading-relaxed mb-3">{"$ agent.execute('scale_operations')"}</p>
+          <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+            <motion.div 
+              animate={{ width: ['0%', '100%'] }} 
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="h-full bg-gradient-to-r from-accent-purple to-accent-orange"
+            ></motion.div>
+          </div>
+        </motion.div>
       </div>
 
-      {/* Bottom Left: 3D Object */}
-      <div className="absolute bottom-[8%] left-[3%] sm:left-[6%] md:left-[10%] z-10 pointer-events-none">
-        <FadeIn delay={0.25} x={-80} y={0} duration={0.9}>
-          <img
-            src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png"
-            alt="3D Object"
-            className="w-[100px] sm:w-[140px] md:w-[180px] h-auto object-contain"
-          />
-        </FadeIn>
+      <div className="absolute bottom-[25%] left-[6%] hidden xl:block pointer-events-none z-10">
+        <motion.div 
+          animate={{ y: [0, 15, 0], rotate: [0, -2, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="glass-panel p-5 rounded-2xl w-64 border border-white/5 shadow-2xl"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-accent-orange/10 text-accent-orange">
+              <TrendingUp size={16} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white uppercase">Growth Accelerated</p>
+              <p className="text-[10px] text-neutral-400">Monthly Revenue</p>
+            </div>
+          </div>
+          <p className="text-lg font-black text-white">+312% <span className="text-xs text-green-400 font-medium">YoY</span></p>
+        </motion.div>
       </div>
 
-      {/* Top Right: Lego */}
-      <div className="absolute top-[4%] right-[1%] sm:right-[2%] md:right-[4%] z-10 pointer-events-none">
-        <FadeIn delay={0.15} x={80} y={0} duration={0.9}>
-          <img
-            src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png"
-            alt="Lego Icon"
-            className="w-[120px] sm:w-[160px] md:w-[210px] h-auto object-contain"
-          />
-        </FadeIn>
+      {/* Main Content */}
+      <div className="relative max-w-5xl text-center z-10 flex flex-col items-center">
+        {/* Intro tag */}
+        <Reveal delay={0.1} direction="down">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-extrabold uppercase tracking-widest text-neutral-300 mb-8">
+            <Sparkles size={10} className="text-accent-purple" />
+            <span>Venture Studio Creativo</span>
+          </div>
+        </Reveal>
+
+        {/* H1 Heading */}
+        <Reveal delay={0.2}>
+          <h1 className="hero-heading font-black tracking-tight uppercase leading-[1.05] max-w-4xl text-center mb-8" style={{ fontSize: 'clamp(2.2rem, 6.2vw, 5.5rem)' }}>
+            We build brands.<br />
+            We create products.<br />
+            We <span className="text-gradient">accelerate growth</span>.
+          </h1>
+        </Reveal>
+
+        {/* Subheadline */}
+        <Reveal delay={0.3} duration={0.8}>
+          <p className="text-sm sm:text-base md:text-lg text-neutral-300 max-w-3xl leading-relaxed font-light mb-12">
+            No somos una agencia tradicional. Somos el <strong className="text-white font-semibold">Venture Studio Creativo</strong> que transforma ideas en empresas de alto valor mediante la intersección perfecta entre estrategia de negocio, diseño de vanguardia, automatización e Inteligencia Artificial.
+          </p>
+        </Reveal>
+
+        {/* CTAs */}
+        <Reveal delay={0.4}>
+          <div className="flex flex-col sm:flex-row items-center gap-5 justify-center">
+            {/* Primary Magnetic CTA */}
+            <Magnetic>
+              <a 
+                href="#contact" 
+                className="group inline-flex items-center gap-3 bg-gradient-to-r from-accent-purple to-accent-violet hover:brightness-110 active:scale-98 rounded-full text-white font-bold uppercase tracking-widest text-xs px-10 py-4.5 border border-white/20 transition-all shadow-[0_0_30px_rgba(182,0,168,0.3)]"
+              >
+                <span>Iniciar Proyecto</span>
+                <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-200" />
+              </a>
+            </Magnetic>
+
+            {/* Secondary Magnetic CTA */}
+            <Magnetic>
+              <a 
+                href="#projects" 
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 text-neutral-300 font-bold uppercase tracking-widest text-xs px-10 py-4.5 hover:bg-white/10 hover:text-white transition-all"
+              >
+                <span>Ver Casos de Éxito</span>
+                <ArrowDown size={12} className="animate-bounce" />
+              </a>
+            </Magnetic>
+          </div>
+        </Reveal>
       </div>
+    </section>
+  );
+};
 
-      {/* Bottom Right: 3D Group */}
-      <div className="absolute bottom-[8%] right-[3%] sm:right-[6%] md:right-[10%] z-10 pointer-events-none">
-        <FadeIn delay={0.3} x={80} y={0} duration={0.9}>
-          <img
-            src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png"
-            alt="3D Graphics Group"
-            className="w-[130px] sm:w-[170px] md:w-[220px] h-auto object-contain"
-          />
-        </FadeIn>
-      </div>
+// Manifesto Section
+const ManifestoSection = () => {
+  return (
+    <section id="manifesto" className="relative py-28 md:py-40 bg-[#0A0A0A] border-t border-white/5 overflow-hidden">
+      <div className="absolute right-[5%] top-[10%] w-[400px] h-[400px] rounded-full bg-radial-glow opacity-30 pointer-events-none"></div>
 
-      {/* About Main Content */}
-      <div className="flex flex-col items-center z-20 max-w-5xl">
-        <FadeIn delay={0} y={40}>
-          <h2 
-            className="hero-heading font-black uppercase leading-none tracking-tight mb-10 sm:mb-14 md:mb-16" 
-            style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
-          >
-            About us
-          </h2>
-        </FadeIn>
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+          
+          {/* Sticky Title */}
+          <div className="lg:col-span-4 lg:sticky lg:top-32">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-purple"></span>
+              <span className="text-[10px] uppercase font-black tracking-widest text-neutral-400">Nuestra Filosofía</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black uppercase text-white tracking-tight leading-tight max-w-md">
+              La filosofía detrás del crecimiento sostenible.
+            </h2>
+          </div>
 
-        {/* Scroll-reveal Paragraph */}
-        <AnimatedText
-          text="Creemos que las grandes empresas no nacen únicamente de un buen logotipo o una campaña publicitaria. Nacen de una estrategia clara, una marca sólida, una experiencia de usuario excepcional y un sistema de crecimiento capaz de evolucionar con el mercado. Por eso, en After Startups integramos negocio, diseño, tecnología, marketing e inteligencia artificial para construir empresas preparadas para competir, crecer y perdurar."
-          className="text-[#D7E2EA] font-medium leading-relaxed max-w-[560px] uppercase tracking-wide select-none"
-          style={{ fontSize: 'clamp(1rem, 2vw, 1.35rem)' }}
-        />
+          {/* Copy Body */}
+          <div className="lg:col-span-8 lg:pl-10">
+            <div className="border-l-2 border-accent-purple/30 pl-6 md:pl-10 py-2">
+              <RevealText 
+                text="Creemos que las grandes empresas no nacen únicamente de un buen logotipo o de una campaña publicitaria aislada. Nacen de una estrategia clara, una marca sólida, una experiencia de usuario excepcional y un sistema operativo capaz de evolucionar con el mercado." 
+                className="text-lg sm:text-xl md:text-2xl text-neutral-300 leading-relaxed font-light mb-8"
+              />
+              
+              <RevealText 
+                text="En After Startups nos convertimos en tu socio estratégico. Nos involucramos desde la validación de la idea inicial hasta la consolidación y el escalamiento de tu negocio, fusionando el criterio humano con el poder técnico de la IA." 
+                className="text-lg sm:text-xl md:text-2xl text-neutral-300 leading-relaxed font-light"
+              />
+            </div>
+          </div>
 
-        <div className="mt-16 sm:mt-20 md:mt-24">
-          <FadeIn delay={0.1} y={20}>
-            <ContactButton />
-          </FadeIn>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-// Services Section
-const servicesData = [
-  {
-    num: "01",
-    name: "Branding & Brand Design",
-    desc: "CREACIÓN DE ESTRATEGIAS DE MARCA, ADNS, NAMING Y SISTEMAS VISUALES PARA COMUNICAR UNA PRESENCIA MEMORABLE Y PERDURABLE."
-  },
-  {
-    num: "02",
-    name: "UX / UI Design",
-    desc: "DISEÑO DE EXPERIENCIAS DE USUARIO Y COMPONENTES ENFOCADOS EN CONVERSIÓN CON PROTOTIPOS E INTERFACES A MEDIDA."
-  },
-  {
-    num: "03",
-    name: "Development",
-    desc: "DESARROLLO DE SOFTWARE Y WEBS A CÓDIGO PURO CON REACT, NEXT.JS Y TAILWIND CSS PARA LA MÁXIMA VELOCIDAD Y SEO."
-  },
-  {
-    num: "04",
-    name: "Digital Publicity",
-    desc: "GESTIÓN DE MEDIOS PAGADOS (PAID MEDIA) EN GOOGLE ADS Y META ADS PARA MAXIMIZAR EL RETORNO DE INVERSIÓN (ROI)."
-  },
-  {
-    num: "05",
-    name: "AI & Automations",
-    desc: "INTEGRACIÓN DE INTELIGENCIA ARTIFICIAL, AGENTES INTELIGENTES, ASISTENTES Y AUTOMATIZACIÓN DE PROCESOS INTERNOS."
-  }
-]
+// Bento Capacidades Section
+const CapacidadesSection = () => {
+  const pilares = [
+    {
+      num: '01',
+      title: 'Venture Building & Strategy',
+      subtitle: 'Antes de diseñar cualquier marca, entendemos el negocio.',
+      desc: 'Estructuramos las bases comerciales, financieras y analíticas para asegurar la viabilidad de cada proyecto antes de ejecutar una sola línea de código o diseño.',
+      bullets: [
+        'Modelos de negocio y propuestas de valor de alto impacto.',
+        'Validación de ideas, estudios de factibilidad y arquitectura.',
+        'Posicionamiento de mercado y roadmaps de crecimiento.',
+        'Estrategias de lanzamiento, monetización y pricing avanzado.'
+      ],
+      icon: <TrendingUp size={24} />,
+      colorClass: 'group-hover:text-cyan-400 group-hover:bg-cyan-950/30 border-cyan-500/10',
+      glow: 'shadow-[0_0_30px_rgba(34,211,238,0.05)]'
+    },
+    {
+      num: '02',
+      title: 'Brand Architecture & Design',
+      subtitle: 'Creamos marcas con propósito y visión de largo plazo.',
+      desc: 'Diseñamos ecosistemas visuales y narrativos completos que otorgan autoridad inmediata en entornos competitivos.',
+      bullets: [
+        'Estrategia de marca, ADN, storytelling y personalidad.',
+        'Naming, arquitectura de marca y Brand Books.',
+        'Sistemas visuales completos: Logos, paletas y tipografía.',
+        'Dirección creativa, de arte y Pitch Decks de inversión.'
+      ],
+      icon: <Layers size={24} />,
+      colorClass: 'group-hover:text-accent-purple group-hover:bg-accent-purple/10 border-accent-purple/10',
+      glow: 'shadow-[0_0_30px_rgba(182,0,168,0.05)]'
+    },
+    {
+      num: '03',
+      title: 'Digital Products & UX/UI',
+      subtitle: 'Experiencias digitales de alta gama enfocadas en la conversión.',
+      desc: 'Diseñamos e implementamos interfaces modernas que no solo lucen espectaculares, sino que guían al usuario hacia el objetivo comercial.',
+      bullets: [
+        'Investigación UX, arquitectura de información y flujos.',
+        'Diseño UI responsivo en Figma para apps y dashboards.',
+        'Desarrollo web moderno: Sitios corporativos, Landing Pages y Funnels.',
+        'Optimización SEO técnica, velocidad de carga y CRO.'
+      ],
+      icon: <Cpu size={24} />,
+      colorClass: 'group-hover:text-violet-400 group-hover:bg-violet-950/30 border-violet-500/10',
+      glow: 'shadow-[0_0_30px_rgba(139,92,246,0.05)]'
+    },
+    {
+      num: '04',
+      title: 'Growth, AI & Automation',
+      subtitle: 'Sistemas inteligentes para acelerar empresas y reducir fricción.',
+      desc: 'Implementamos tecnología e inteligencia artificial para automatizar la operación comercial y escalar la captación de clientes.',
+      bullets: [
+        'Agentes inteligentes, chatbots y prompts profesionales.',
+        'Automatización con WhatsApp Business, CRM, sheets y calendar.',
+        'Paid Media & Publicidad en Google Ads y Meta Ads (ROI).',
+        'Growth Marketing: embudos de captación y copywriting persuasivo.'
+      ],
+      icon: <Bot size={24} />,
+      colorClass: 'group-hover:text-accent-orange group-hover:bg-accent-orange/10 border-accent-orange/10',
+      glow: 'shadow-[0_0_30px_rgba(190,76,0,0.05)]'
+    }
+  ];
 
-const ServicesSection = () => {
   return (
-    <section id="services" className="w-full bg-[#FFFFFF] rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 z-20 text-black">
-      {/* Heading */}
-      <div className="w-full text-center mb-16 sm:mb-20 md:mb-28">
-        <FadeIn delay={0} y={40}>
-          <h2 className="font-black uppercase text-[#0C0C0C]" style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}>
-            Services
-          </h2>
-        </FadeIn>
-      </div>
-
-      {/* Services List */}
-      <div className="max-w-5xl mx-auto flex flex-col">
-        {servicesData.map((service, idx) => (
-          <FadeIn
-            key={service.num}
-            delay={idx * 0.1}
-            y={30}
-            className="flex items-center gap-6 sm:gap-10 py-8 sm:py-10 md:py-12 border-b border-[#0C0C0C]/15 last:border-b-0"
-          >
-            {/* Number on Left */}
-            <span 
-              className="font-black text-[#0C0C0C] select-none shrink-0"
-              style={{ fontSize: 'clamp(3rem, 10vw, 140px)' }}
-            >
-              {service.num}
-            </span>
-
-            {/* Name + Desc stacked on Right */}
-            <div className="flex flex-col gap-2">
-              <h3 
-                className="font-medium uppercase text-black"
-                style={{ fontSize: 'clamp(1rem, 2.2vw, 2.1rem)' }}
-              >
-                {service.name}
-              </h3>
-              <p 
-                className="font-light leading-relaxed max-w-2xl text-black/60 uppercase"
-                style={{ fontSize: 'clamp(0.85rem, 1.6vw, 1.25rem)' }}
-              >
-                {service.desc}
-              </p>
+    <section id="capacidades" className="relative py-28 md:py-36 bg-[#080808] border-t border-white/5">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        
+        {/* Title */}
+        <div className="w-full text-center mb-20">
+          <Reveal delay={0.1}>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-4">
+              <span>Pilares Operativos</span>
             </div>
-          </FadeIn>
-        ))}
+          </Reveal>
+          <Reveal delay={0.2}>
+            <h2 className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight">
+              Sistemas integrales de negocio.
+            </h2>
+            <p className="text-accent-purple font-black text-2xl uppercase tracking-widest mt-2">
+              ¿Qué hacemos?
+            </p>
+          </Reveal>
+        </div>
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          {pilares.map((pilar, idx) => (
+            <Reveal key={pilar.num} delay={idx * 0.15}>
+              <div 
+                className={`group glass-panel glass-panel-hover p-8 sm:p-10 rounded-[32px] h-full flex flex-col justify-between border border-white/5 hover:border-white/10 overflow-hidden relative ${pilar.glow}`}
+              >
+                {/* Background glow node */}
+                <div className="absolute -top-16 -right-16 w-32 h-32 bg-white/2 rounded-full blur-2xl group-hover:bg-white/5 transition-all duration-500"></div>
+
+                <div>
+                  {/* Top Bar */}
+                  <div className="flex justify-between items-start mb-8">
+                    <div className={`p-4 rounded-2xl border bg-white/2 text-neutral-300 transition-all duration-300 ${pilar.colorClass}`}>
+                      {pilar.icon}
+                    </div>
+                    <span className="font-mono text-3xl font-black text-white/10 group-hover:text-white/20 transition-colors">
+                      {pilar.num}
+                    </span>
+                  </div>
+
+                  {/* Headers */}
+                  <h3 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-none mb-2">
+                    {pilar.title}
+                  </h3>
+                  <p className="text-xs font-semibold text-accent-orange/90 uppercase tracking-widest mb-4">
+                    {pilar.subtitle}
+                  </p>
+                  
+                  {/* Description */}
+                  <p className="text-neutral-400 text-xs sm:text-sm font-light leading-relaxed mb-6">
+                    {pilar.desc}
+                  </p>
+                </div>
+
+                {/* Bullet list */}
+                <div className="border-t border-white/5 pt-6 mt-4">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] uppercase tracking-wider text-neutral-300 font-medium">
+                    {pilar.bullets.map((bullet, bIdx) => (
+                      <li key={bIdx} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-purple/75 mt-1 shrink-0"></span>
+                        <span className="leading-tight">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
       </div>
     </section>
-  )
-}
+  );
+};
+
+// Enfoque Vertical Section
+const EnfoqueSection = () => {
+  return (
+    <section id="enfoque" className="relative py-28 md:py-36 bg-[#0A0A0A] border-t border-white/5 overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-radial-glow-orange opacity-40 pointer-events-none z-0"></div>
+
+      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-10">
+        <Reveal>
+          <div className="glass-panel p-8 sm:p-14 md:p-16 rounded-[40px] border border-accent-orange/15 shadow-[0_0_50px_rgba(190,76,0,0.08)] bg-gradient-to-br from-[#101010] to-[#0c0c0d]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              <div className="lg:col-span-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-orange/10 border border-accent-orange/20 text-[9px] font-bold uppercase tracking-widest text-accent-orange mb-6">
+                  <Sparkles size={10} />
+                  <span>Sector de Alto Valor</span>
+                </div>
+                
+                <h3 className="text-2xl sm:text-4xl font-black uppercase text-white tracking-tight leading-none mb-6">
+                  Especialización:<br />
+                  <span className="text-gradient">Real Estate Marketing</span>
+                </h3>
+                
+                <p className="text-sm text-neutral-300 leading-relaxed font-light">
+                  El mercado inmobiliario exige un nivel de sofisticación único. Desarrollamos soluciones específicas para desarrolladores y asesores inmobiliarios de alto nivel: branding de proyectos, marketing inmobiliario estratégico, presentaciones comerciales de propiedades premium, material comercial de alto impacto y campañas digitales automatizadas para la captación de clientes e inversionistas cualificados.
+                </p>
+              </div>
+
+              {/* Gold/Orange Glowing Visual Mock */}
+              <div className="lg:col-span-4 flex justify-center">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="w-48 h-48 rounded-3xl border border-accent-orange/20 bg-accent-orange/5 flex flex-col justify-between p-6 relative overflow-hidden"
+                >
+                  {/* Subtle vector grid */}
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(190,76,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(190,76,0,0.02)_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+                  
+                  <div className="flex justify-between items-start z-10">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-accent-orange/80">RE PORTFOLIO</span>
+                    <MapPin size={16} className="text-accent-orange" />
+                  </div>
+                  
+                  <div className="z-10">
+                    <p className="text-2xl font-black text-white leading-none mb-1">PREMIUM</p>
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-neutral-400">REAL ESTATE SUITE</p>
+                  </div>
+                </motion.div>
+              </div>
+
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+};
 
 // Projects Section
-const projectCardsData = [
-  {
-    num: "01",
-    name: "EcoSuites",
-    category: "Venture Studio / Inmobiliario",
-    link: "https://www.eco-suites.com/",
-    col1img1: "/ecosuites_mobile.png",
-    col1img2: "/ecosuites_detail.png",
-    col2img: "/ecosuites_web.png"
-  },
-  {
-    num: "02",
-    name: "Sistema para barberías",
-    category: "SaaS / CRM",
-    link: "https://men-and-boys-reservations.vercel.app/",
-    col1img1: "/barber_mobile.png",
-    col1img2: "/barber_detail.png",
-    col2img: "/barber_web.png"
-  },
-  {
-    num: "03",
-    name: "VeroCash",
-    category: "Fintech / Digital Product",
-    link: "https://www.verocash.net/",
-    col1img1: "/verocash_mobile.png",
-    col1img2: "/verocash_detail.png",
-    col2img: "/verocash_web.png"
-  }
-]
-
-interface ProjectCardProps {
-  project: typeof projectCardsData[0]
-  index: number
-}
-
-const ProjectCard = ({ project, index }: ProjectCardProps) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start']
-  })
-
-  // 3 sticky cards: target scales are 0.94, 0.97, 1.00
-  const targetScale = 1 - (3 - 1 - index) * 0.03
-  const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale])
+const ProjectsSection = () => {
+  const projects = [
+    {
+      name: 'EcoSuites',
+      category: 'Venture Studio / Inmobiliario',
+      desc: 'Estrategia de negocio, branding, marketing digital, estudios de factibilidad y generación de demanda.',
+      image: '/ecosuites_web.png',
+      link: 'https://www.eco-suites.com/'
+    },
+    {
+      name: 'Men & Boys',
+      category: 'SaaS / CRM / Reservaciones',
+      desc: 'Diseño UX/UI, estrategia de producto y desarrollo de sistema de reservaciones y gestión interna.',
+      image: '/barber_web.png',
+      link: 'https://men-and-boys-reservations.vercel.app/'
+    },
+    {
+      name: 'Print Cards',
+      category: 'Paid Media / Lead Gen',
+      desc: 'Gestión integral y optimización de campañas publicitarias de paid media para generación de clientes potenciales.',
+      image: '',
+      link: '#'
+    },
+    {
+      name: 'DJ Lu Valenzuela',
+      category: 'Digital Product / Press Kit',
+      desc: 'Diseño, desarrollo de producto y UX/UI para un Press Kit digital interactivo de alta gama enfocado en posicionamiento y booking de la industria musical.',
+      image: '',
+      link: '#'
+    },
+    {
+      name: 'Ecoprojects',
+      category: 'Branding / Marketing',
+      desc: 'Posicionamiento de marca, branding y campañas de marketing para turismo de aventura.',
+      image: '/ecoprojects_original.jpg',
+      link: '#'
+    }
+  ];
 
   return (
-    <div 
-      ref={containerRef} 
-      className="h-[85vh] flex items-center justify-center sticky top-24 md:top-32"
-    >
-      <motion.div
-        style={{
-          scale,
-          top: `calc(96px + ${index * 28}px)`
-        }}
-        className="w-full max-w-5xl rounded-[40px] sm:rounded-[50px] md:rounded-[60px] border-2 border-[#D7E2EA] bg-[#0C0C0C] p-4 sm:p-6 md:p-8 flex flex-col gap-6"
-      >
-        {/* Top Row */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center gap-4 sm:gap-6">
-            <span 
-              className="font-black text-[#D7E2EA] opacity-25 leading-none shrink-0"
-              style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
-            >
-              {project.num}
-            </span>
-            <div className="flex flex-col">
-              <span className="text-xs text-accent uppercase tracking-widest font-semibold">
-                {project.category}
-              </span>
-              <h3 className="text-lg sm:text-2xl font-bold uppercase text-[#D7E2EA]">
-                {project.name}
-              </h3>
+    <section id="projects" className="relative py-28 md:py-36 bg-[#080808] border-t border-white/5">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-20">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-4">
+              <span>Showcase</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight">
+              Casos de Trabajo.
+            </h2>
+          </div>
+          <p className="text-xs uppercase tracking-widest text-neutral-400 font-semibold max-w-xs md:text-right">
+            Modelos de negocio e interfaces interactivas de alto rendimiento.
+          </p>
+        </div>
+
+        {/* Projects Cards Grid */}
+        <div className="flex flex-col gap-12">
+          {projects.map((project, idx) => (
+            <Reveal key={project.name} delay={idx * 0.1}>
+              <div 
+                className="group glass-panel rounded-[32px] border border-white/5 hover:border-accent-purple/20 transition-all duration-300 overflow-hidden"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                  
+                  {/* Visual Side (60% width -> col-span-7) */}
+                  <div className="lg:col-span-7 relative h-72 sm:h-96 md:h-[450px] overflow-hidden bg-[#0D0D0F] border-b lg:border-b-0 lg:border-r border-white/5">
+                    {project.name === 'DJ Lu Valenzuela' ? (
+                      /* Overlapping Interactive iOS Phone Simulator Screenshots */
+                      <div className="flex items-center justify-center gap-2 sm:gap-3.5 h-full bg-neutral-950/80 py-4 px-4 overflow-hidden relative select-none">
+                        {[
+                          '/dj_lu_screen1.png',
+                          '/dj_lu_screen2.png',
+                          '/dj_lu_screen3.png',
+                          '/dj_lu_screen4.png'
+                        ].map((src, sIdx) => (
+                          <motion.div
+                            key={sIdx}
+                            className="w-[20%] sm:w-[22%] aspect-[9/16] rounded-xl overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.6)] border border-white/10 shrink-0 bg-neutral-900"
+                            whileHover={{ 
+                              scale: 1.25, 
+                              zIndex: 10,
+                              rotate: 0,
+                              y: -12
+                            }}
+                            initial={{ 
+                              rotate: sIdx === 0 ? -4 : sIdx === 1 ? -1 : sIdx === 2 ? 2 : 5,
+                              y: sIdx % 2 === 0 ? 6 : -6
+                            }}
+                            transition={{ type: 'spring', stiffness: 350, damping: 18 }}
+                          >
+                            <img 
+                              src={src} 
+                              alt={`Retro iOS Screen ${sIdx + 1}`} 
+                              className="w-full h-full object-cover select-none pointer-events-none" 
+                            />
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : project.name === 'Print Cards' ? (
+                      /* Side-by-side Instagram Mock Showcase */
+                      <div className="grid grid-cols-2 gap-4 p-5 h-full bg-[#0C0C0E]">
+                        <div className="rounded-2xl overflow-hidden border border-white/5 shadow-2xl h-full relative group/ig1 bg-[#101012]">
+                          <img 
+                            src="/print_cards_ig1.png" 
+                            alt="Print Cards Instagram Profile" 
+                            className="w-full h-full object-cover group-hover/ig1:scale-104 transition-transform duration-500" 
+                          />
+                        </div>
+                        <div className="rounded-2xl overflow-hidden border border-white/5 shadow-2xl h-full relative group/ig2 bg-[#101012]">
+                          <img 
+                            src="/print_cards_ig2.png" 
+                            alt="Print Cards Instagram Feed" 
+                            className="w-full h-full object-cover group-hover/ig2:scale-104 transition-transform duration-500" 
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      /* Standard cover image layout (EcoSuites, Men & Boys, Ecoprojects) */
+                      <img 
+                        src={project.image} 
+                        alt={project.name} 
+                        className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
+                      />
+                    )}
+                    
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+                    
+                    {/* Badge */}
+                    <div className="absolute bottom-6 left-6 flex items-center gap-2 pointer-events-none">
+                      <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] uppercase font-bold tracking-widest text-white border border-white/10">
+                        {project.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Info Side (40% width -> col-span-5) */}
+                  <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between">
+                    <div>
+                      <span className="font-mono text-xs font-bold text-accent-purple uppercase tracking-widest">
+                        Proyecto 0{idx + 1}
+                      </span>
+                      <h3 className="text-3xl font-black uppercase text-white tracking-tight mt-2 mb-6 group-hover:text-accent-purple transition-colors">
+                        {project.name}
+                      </h3>
+                      
+                      <div className="border-t border-white/5 pt-6">
+                        <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">
+                          Alcance Estratégico & Técnico
+                        </span>
+                        <p className="text-sm text-neutral-300 font-light leading-relaxed mt-2.5">
+                          {project.desc}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+                      {project.link !== '#' ? (
+                        <a 
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-white hover:text-accent-purple transition-colors"
+                        >
+                          <span>Ver Proyecto Live</span>
+                          <ExternalLink size={14} />
+                        </a>
+                      ) : (
+                        <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
+                          Press Kit Digital / Confidencial
+                        </span>
+                      )}
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
+// Proceso Section
+const ProcesoSection = () => {
+  const steps = [
+    {
+      num: '1',
+      title: 'Discovery & Benchmark',
+      desc: 'Analizamos antes de ejecutar. Investigamos el mercado, la competencia y validamos la viabilidad del negocio.'
+    },
+    {
+      num: '2',
+      title: 'Architecture & Design',
+      desc: 'Definimos el ADN visual, la narrativa y diseñamos prototipos digitales de alta gama (UX/UI).'
+    },
+    {
+      num: '3',
+      title: 'Deployment & Automation',
+      desc: 'Desarrollamos la plataforma web, conectamos tus sistemas e integramos automatizaciones y agentes de IA.'
+    },
+    {
+      num: '4',
+      title: 'Growth & Scale',
+      desc: 'Activamos la maquinaria comercial mediante campañas de paid media, optimización continua y crecimiento sostenible.'
+    }
+  ];
+
+  return (
+    <section id="proceso" className="relative py-28 md:py-36 bg-[#0A0A0A] border-t border-white/5 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        
+        {/* Header */}
+        <div className="w-full text-center mb-24">
+          <Reveal>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-4">
+              <span>Metodología</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight">
+              El camino de la idea al escalamiento.
+            </h2>
+          </Reveal>
+        </div>
+
+        {/* Process Steps Timeline */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+          {steps.map((step, idx) => (
+            <Reveal key={step.num} delay={idx * 0.15}>
+              <div className="relative group">
+                
+                {/* Connector Line (Desktop) */}
+                {idx < 3 && (
+                  <div className="hidden lg:block absolute top-7 left-14 w-full h-[1px] bg-gradient-to-r from-accent-purple/20 to-transparent z-0"></div>
+                )}
+
+                <div className="relative z-10 flex flex-col gap-4">
+                  {/* Number bubble */}
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 group-hover:border-accent-purple/40 group-hover:bg-accent-purple/5 transition-all duration-300 flex items-center justify-center">
+                    <span className="font-mono text-xl font-black text-white group-hover:text-accent-purple transition-colors">
+                      {step.num}
+                    </span>
+                  </div>
+
+                  {/* Title & Desc */}
+                  <h3 className="text-lg font-black uppercase text-white tracking-tight mt-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-neutral-400 text-xs sm:text-sm font-light leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
+// Contact Footer Section
+const ContactSection = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.name && formData.email) {
+      // Format structured message for WhatsApp
+      const textMessage = `Hola After Startups, me gustaría iniciar un proyecto.
+
+*Nombre:* ${formData.name}
+*Email:* ${formData.email}
+*Mensaje:* ${formData.message || 'Sin mensaje adicional'}`;
+
+      const encodedMessage = encodeURIComponent(textMessage);
+      const whatsappUrl = `https://wa.me/5218123997318?text=${encodedMessage}`;
+
+      // Open WhatsApp link in a new window/tab
+      window.open(whatsappUrl, '_blank');
+
+      // Show success/redirection state
+      setSubmitted(true);
+      
+      // Auto-reset form state after a delay
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({ name: '', email: '', message: '' });
+      }, 7000);
+    }
+  };
+
+  return (
+    <section id="contact" className="relative py-28 md:py-36 bg-[#080808] border-t border-white/5 overflow-hidden">
+      <div className="absolute bottom-0 left-0 w-full h-[500px] bg-radial-glow opacity-30 pointer-events-none z-0"></div>
+
+      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* Header text */}
+          <div className="lg:col-span-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-6">
+              <span>Hablemos</span>
+            </div>
+            
+            <h2 className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight leading-none mb-6">
+              ¿Listo para construir el futuro de tu empresa?
+            </h2>
+            
+            <p className="text-sm text-neutral-400 leading-relaxed font-light mb-8 max-w-md">
+              Dejemos atrás las metodologías tradicionales de las agencias comunes. Construyamos un activo digital escalable, automatizado y listo para competir en el mercado actual.
+            </p>
+
+            <div className="flex flex-col gap-4 text-xs font-semibold uppercase tracking-wider text-neutral-300">
+              <a href="mailto:hello@afterstartups.agency" className="flex items-center gap-3 hover:text-accent-purple transition-colors">
+                <Mail size={16} className="text-accent-purple" />
+                <span>hello@afterstartups.agency</span>
+              </a>
+              <div className="flex items-center gap-3">
+                <Calendar size={16} className="text-accent-purple" />
+                <span>Lunes a Viernes · Consultorías Estratégicas</span>
+              </div>
             </div>
           </div>
-          <LiveProjectButton href={project.link} />
-        </div>
 
-        {/* Bottom Row - Two Column Image Grid */}
-        <div className="grid grid-cols-10 gap-4 sm:gap-6 flex-1 min-h-0">
-          {/* Left Column (40% width -> col-span-4) */}
-          <div className="col-span-10 md:col-span-4 flex flex-col gap-4 sm:gap-6 h-full justify-between">
-            <img
-              src={project.col1img1}
-              alt={`${project.name} Details 1`}
-              className="w-full rounded-[24px] sm:rounded-[32px] md:rounded-[40px] object-cover h-[130px] sm:h-[160px] md:h-[180px] lg:h-[200px]"
-            />
-            <img
-              src={project.col1img2}
-              alt={`${project.name} Details 2`}
-              className="w-full rounded-[24px] sm:rounded-[32px] md:rounded-[40px] object-cover flex-1 min-h-[140px] sm:min-h-[180px]"
-            />
+          {/* Form / CTA button */}
+          <div className="lg:col-span-6">
+            <div className="glass-panel p-8 sm:p-10 rounded-[32px] border border-white/5 bg-[#0D0D10]/50 relative">
+              <AnimatePresence mode="wait">
+                {!submitted ? (
+                  <motion.form 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onSubmit={handleSubmit} 
+                    className="flex flex-col gap-5"
+                  >
+                    <div>
+                      <label className="block text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Nombre Completo</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="John Doe" 
+                        className="w-full bg-white/5 border border-white/10 focus:border-accent-purple focus:outline-none rounded-xl px-4 py-3 text-sm text-white transition-all font-light"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Email Corporativo</label>
+                      <input 
+                        type="email" 
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        placeholder="john@company.com" 
+                        className="w-full bg-white/5 border border-white/10 focus:border-accent-purple focus:outline-none rounded-xl px-4 py-3 text-sm text-white transition-all font-light"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-2">Platícanos sobre tu proyecto</label>
+                      <textarea 
+                        rows={4}
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        placeholder="Escribe brevemente tu visión o requerimientos..." 
+                        className="w-full bg-white/5 border border-white/10 focus:border-accent-purple focus:outline-none rounded-xl px-4 py-3 text-sm text-white transition-all font-light resize-none"
+                      />
+                    </div>
+
+                    <Magnetic>
+                      <button 
+                        type="submit" 
+                        className="w-full text-center py-4 rounded-xl bg-gradient-to-r from-accent-purple to-accent-violet hover:brightness-110 text-white font-bold uppercase tracking-widest text-xs border border-white/10 transition-all shadow-[0_0_20px_rgba(182,0,168,0.2)] cursor-pointer"
+                      >
+                        Agendar Consultoría Estratégica
+                      </button>
+                    </Magnetic>
+                  </motion.form>
+                ) : (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="py-12 text-center flex flex-col items-center justify-center gap-4"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-accent-purple/10 flex items-center justify-center text-accent-purple border border-accent-purple/20">
+                      <CheckCircle2 size={32} />
+                    </div>
+                    <h3 className="text-xl font-black uppercase text-white tracking-tight">¡Redirigiendo a WhatsApp!</h3>
+                    <p className="text-xs text-neutral-400 leading-relaxed font-light max-w-xs">
+                      Hemos abierto una ventana de WhatsApp para que nos envíes tu consulta directamente. ¡Hablemos de inmediato!
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
-          {/* Right Column (60% width -> col-span-6) */}
-          <div className="col-span-10 md:col-span-6 h-full">
-            <img
-              src={project.col2img}
-              alt={`${project.name} Hero`}
-              className="w-full h-full rounded-[24px] sm:rounded-[32px] md:rounded-[40px] object-cover min-h-[220px] md:min-h-[300px]"
-            />
-          </div>
         </div>
-      </motion.div>
-    </div>
-  )
-}
 
-const ProjectsSection = () => {
-  return (
-    <section id="projects" className="relative w-full bg-[#0C0C0C] rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] -mt-10 sm:-mt-12 md:-mt-14 px-5 sm:px-8 md:px-10 pt-24 pb-32 z-30">
-      {/* Heading */}
-      <div className="w-full text-center mb-16 sm:mb-20">
-        <FadeIn delay={0} y={40}>
-          <h2 className="hero-heading font-black uppercase leading-none tracking-tight" style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}>
-            Project
-          </h2>
-        </FadeIn>
+        {/* Microcopy & Brand footer */}
+        <footer className="mt-28 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-black uppercase tracking-wider text-neutral-200">
+              AFTER STARTUPS © 2026 · Venture Studio.
+            </span>
+            <span className="text-[9px] uppercase tracking-widest text-neutral-500 font-semibold">
+              Branding · Growth · AI · Digital Products.
+            </span>
+          </div>
+          <div className="flex gap-4">
+            <a href="mailto:hello@afterstartups.agency" className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">
+              hello@afterstartups.agency
+            </a>
+          </div>
+        </footer>
       </div>
-
-      {/* Sticky Stacking Cards Container */}
-      <div className="flex flex-col gap-0 select-none">
-        {projectCardsData.map((project, idx) => (
-          <ProjectCard key={project.num} project={project} index={idx} />
-        ))}
-      </div>
-
-      {/* Footer / Contact Anchor */}
-      <footer id="contact" className="w-full mt-24 border-t border-[#D7E2EA]/10 pt-10 flex flex-col sm:flex-row justify-between items-center gap-6 text-[#D7E2EA]/40 text-xs sm:text-sm tracking-widest font-medium uppercase">
-        <span>© 2026 AFTER STARTUPS. ALL RIGHTS RESERVED.</span>
-        <a href="mailto:hello@afterstartups.agency" className="hover:text-white transition-colors">
-          HELLO@AFTERSTARTUPS.AGENCY
-        </a>
-      </footer>
     </section>
-  )
-}
-
+  );
+};
 
 // ==========================================
-// 3. MAIN APP WRAPPER
+// 3. MAIN APPLICATION WRAPPER
 // ==========================================
 function App() {
   return (
-    <main className="w-full bg-[#0C0C0C] min-h-screen text-[#D7E2EA] overflow-x-clip">
+    <main className="w-full bg-[#0A0A0A] text-[#D7E2EA] antialiased overflow-x-hidden selection:bg-accent-purple selection:text-white">
+      <Navbar />
       <HeroSection />
-      <MarqueeSection />
-      <AboutSection />
-      <ServicesSection />
+      <ManifestoSection />
+      <CapacidadesSection />
+      <EnfoqueSection />
       <ProjectsSection />
+      <ProcesoSection />
+      <ContactSection />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

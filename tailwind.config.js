@@ -7,7 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        accent: '#5E0ED7',
+        accent: {
+          purple: '#B600A8',
+          violet: '#7621B0',
+          orange: '#BE4C00',
+          dark: '#18011F',
+        }
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -16,3 +21,5 @@ export default {
   },
   plugins: [],
 }
+
+
