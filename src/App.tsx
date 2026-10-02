@@ -600,6 +600,14 @@ const EnfoqueSection = () => {
 const ProjectsSection = () => {
   const projects = [
     {
+      name: 'Sur Steel',
+      category: 'Sitio Web / Industria del Acero',
+      desc: 'Diseño y desarrollo de un sitio web cinematográfico que avanza con el scroll, con catálogo de materiales y cotización directa para la venta de lámina y acero en Santiago, N.L.',
+      image: '/sursteel_web.png',
+      imagePosition: 'left center',
+      link: 'https://www.sursteel.com.mx/'
+    },
+    {
       name: 'EcoSuites',
       category: 'Venture Studio / Inmobiliario',
       desc: 'Estrategia de negocio, branding, marketing digital, estudios de factibilidad y generación de demanda.',
@@ -722,6 +730,7 @@ const ProjectsSection = () => {
                         src={project.image} 
                         alt={project.name} 
                         className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
+                        style={"imagePosition" in project ? { objectPosition: project.imagePosition } : undefined}
                       />
                     )}
                     
