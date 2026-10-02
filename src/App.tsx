@@ -13,10 +13,16 @@ import {
   CheckCircle2,
   Menu,
   X,
-  MapPin,
-  ExternalLink
+  ExternalLink,
+  Building2,
+  Factory,
+  Mountain,
+  Scissors,
+  Music,
+  Store
 } from 'lucide-react';
 import { FACEBOOK_URL, WHATSAPP_DISPLAY, WHATSAPP_URL } from './site';
+import Promo from './Promo';
 
 // ==========================================
 // 1. REUSABLE MICRO-INTERACTIVE COMPONENTS
@@ -541,56 +547,78 @@ const CapacidadesSection = () => {
 
 // Enfoque Vertical Section
 const EnfoqueSection = () => {
+  const industrias = [
+    { icon: <Building2 size={22} />, name: 'Inmobiliario', desc: 'Branding de desarrollos, presentaciones premium y captación de inversionistas.', cliente: 'EcoSuites' },
+    { icon: <Factory size={22} />, name: 'Industria y acero', desc: 'Sitios que convierten visitas en cotizaciones para venta B2B y mayoreo.', cliente: 'Sur Steel' },
+    { icon: <Mountain size={22} />, name: 'Turismo y experiencias', desc: 'Posicionamiento y campañas para atraer viajeros y reservas.', cliente: 'Ecoprojects' },
+    { icon: <Scissors size={22} />, name: 'Servicios y belleza', desc: 'Sistemas de reservaciones, CRM y agenda automatizada.', cliente: 'Men & Boys' },
+    { icon: <Music size={22} />, name: 'Música y entretenimiento', desc: 'Press kits digitales y marca personal para booking.', cliente: 'DJ Lu Valenzuela' },
+    { icon: <Store size={22} />, name: 'Comercio y marcas locales', desc: 'Paid media y contenido para generar clientes potenciales.', cliente: 'Print Cards' },
+  ];
+
   return (
     <section id="enfoque" className="relative py-28 md:py-36 bg-[#0A0A0A] border-t border-white/5 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-radial-glow-orange opacity-40 pointer-events-none z-0"></div>
 
-      <div className="max-w-5xl mx-auto px-6 md:px-12 relative z-10">
-        <Reveal>
-          <div className="glass-panel p-8 sm:p-14 md:p-16 rounded-[40px] border border-accent-orange/15 shadow-[0_0_50px_rgba(190,76,0,0.08)] bg-gradient-to-br from-[#101010] to-[#0c0c0d]">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              
-              <div className="lg:col-span-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-orange/10 border border-accent-orange/20 text-[9px] font-bold uppercase tracking-widest text-accent-orange mb-6">
-                  <Sparkles size={10} />
-                  <span>Sector de Alto Valor</span>
-                </div>
-                
-                <h3 className="text-2xl sm:text-4xl font-black uppercase text-white tracking-tight leading-none mb-6">
-                  Especialización:<br />
-                  <span className="text-gradient">Real Estate Marketing</span>
-                </h3>
-                
-                <p className="text-sm text-neutral-300 leading-relaxed font-light">
-                  El mercado inmobiliario exige un nivel de sofisticación único. Desarrollamos soluciones específicas para desarrolladores y asesores inmobiliarios de alto nivel: branding de proyectos, marketing inmobiliario estratégico, presentaciones comerciales de propiedades premium, material comercial de alto impacto y campañas digitales automatizadas para la captación de clientes e inversionistas cualificados.
-                </p>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+          {/* Intro */}
+          <div className="lg:col-span-5 lg:sticky lg:top-32">
+            <Reveal>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-orange/10 border border-accent-orange/20 text-[9px] font-bold uppercase tracking-widest text-accent-orange mb-6">
+                <Sparkles size={10} />
+                <span>Industrias que impulsamos</span>
               </div>
 
-              {/* Gold/Orange Glowing Visual Mock */}
-              <div className="lg:col-span-4 flex justify-center">
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="w-48 h-48 rounded-3xl border border-accent-orange/20 bg-accent-orange/5 flex flex-col justify-between p-6 relative overflow-hidden"
+              <h3 className="text-2xl sm:text-4xl font-black uppercase text-white tracking-tight leading-none mb-6">
+                Un mismo sistema,<br />
+                <span className="text-gradient">cualquier industria</span>
+              </h3>
+
+              <p className="text-sm text-neutral-300 leading-relaxed font-light mb-8">
+                Estrategia, marca, tecnología e IA adaptadas a cómo vende tu giro. Ya lo aplicamos en sectores muy distintos, desde desarrollos inmobiliarios hasta venta de acero, turismo y servicios.
+              </p>
+
+              <Magnetic>
+                <a
+                  href="#contact"
+                  className="group inline-flex items-center gap-3 rounded-full border border-accent-orange/30 bg-accent-orange/10 hover:bg-accent-orange/20 text-white font-bold uppercase tracking-widest text-xs px-8 py-4 transition-all"
                 >
-                  {/* Subtle vector grid */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(190,76,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(190,76,0,0.02)_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-                  
-                  <div className="flex justify-between items-start z-10">
-                    <span className="text-[10px] font-mono tracking-widest uppercase text-accent-orange/80">RE PORTFOLIO</span>
-                    <MapPin size={16} className="text-accent-orange" />
-                  </div>
-                  
-                  <div className="z-10">
-                    <p className="text-2xl font-black text-white leading-none mb-1">PREMIUM</p>
-                    <p className="text-[9px] uppercase tracking-widest font-bold text-neutral-400">REAL ESTATE SUITE</p>
-                  </div>
-                </motion.div>
-              </div>
-
-            </div>
+                  <span>Platícanos de tu negocio</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-200" />
+                </a>
+              </Magnetic>
+            </Reveal>
           </div>
-        </Reveal>
+
+          {/* Industry grid */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+            {industrias.map((ind, idx) => (
+              <Reveal key={ind.name} delay={idx * 0.08}>
+                <div className="group glass-panel glass-panel-hover h-full p-6 rounded-3xl border border-white/5 flex flex-col gap-4">
+                  <div className="flex justify-between items-start">
+                    <div className="p-3 rounded-2xl border border-accent-orange/15 bg-accent-orange/5 text-accent-orange group-hover:text-white group-hover:bg-accent-purple/20 group-hover:border-accent-purple/30 transition-all duration-300">
+                      {ind.icon}
+                    </div>
+                    <span className="font-mono text-xs font-black text-white/10 group-hover:text-white/25 transition-colors">
+                      0{idx + 1}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black uppercase text-white tracking-tight mb-2">{ind.name}</h4>
+                    <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">{ind.desc}</p>
+                  </div>
+                  <span className="mt-auto pt-4 border-t border-white/5 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+                    Caso: <span className="text-neutral-300">{ind.cliente}</span>
+                  </span>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+        </div>
       </div>
     </section>
   );
@@ -1062,6 +1090,7 @@ function App() {
       <ProjectsSection />
       <ProcesoSection />
       <ContactSection />
+      <Promo />
     </main>
   );
 }
