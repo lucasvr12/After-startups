@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/aviso-de-privacidad", "destination": "/index.html" }]
+}

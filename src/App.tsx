@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence, type MotionValue } from 'framer-motion';
 import { 
   ArrowRight, 
   ArrowDown, 
@@ -7,16 +7,16 @@ import {
   Layers, 
   Cpu, 
   Bot, 
-  Calendar, 
-  Mail, 
-  Sparkles, 
-  CheckCircle2, 
-  Menu, 
+  Calendar,
+  MessageCircle,
+  Sparkles,
+  CheckCircle2,
+  Menu,
   X,
   MapPin,
-  ExternalLink,
-  Rocket
+  ExternalLink
 } from 'lucide-react';
+import { FACEBOOK_URL, WHATSAPP_DISPLAY, WHATSAPP_URL } from './site';
 
 // ==========================================
 // 1. REUSABLE MICRO-INTERACTIVE COMPONENTS
@@ -121,24 +121,30 @@ export const RevealText: React.FC<RevealTextProps> = ({ text, className = '' }) 
   });
 
   const words = text.split(' ');
-  
+
   return (
     <p ref={containerRef} className={`flex flex-wrap ${className}`}>
-      {words.map((word, wIdx) => {
-        const start = wIdx / words.length;
-        const end = (wIdx + 1) / words.length;
-        const opacity = useTransform(scrollYProgress, [start, end], [0.15, 1]);
-
-        return (
-          <span key={wIdx} className="relative mr-[0.25em] inline-block">
-            <span className="opacity-0">{word}</span>
-            <motion.span style={{ opacity }} className="absolute inset-0 select-none">
-              {word}
-            </motion.span>
-          </span>
-        );
-      })}
+      {words.map((word, wIdx) => (
+        <RevealWord
+          key={wIdx}
+          word={word}
+          progress={scrollYProgress}
+          range={[wIdx / words.length, (wIdx + 1) / words.length]}
+        />
+      ))}
     </p>
+  );
+};
+
+const RevealWord = ({ word, progress, range }: { word: string; progress: MotionValue<number>; range: [number, number] }) => {
+  const opacity = useTransform(progress, range, [0.15, 1]);
+  return (
+    <span className="relative mr-[0.25em] inline-block">
+      <span className="opacity-0">{word}</span>
+      <motion.span style={{ opacity }} className="absolute inset-0 select-none">
+        {word}
+      </motion.span>
+    </span>
   );
 };
 
@@ -171,26 +177,8 @@ const Navbar = () => {
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'py-4 bg-[#0A0A0AD0] backdrop-blur-md border-b border-white/5' : 'py-6 bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
         {/* Logo */}
-        <a href="#hero" className="font-black text-xl tracking-tight text-white flex items-center gap-2.5 hover:opacity-90 transition-opacity">
-          <motion.div
-            animate={{ 
-              y: [0, -4, 0],
-              x: [0, 1.5, 0],
-              rotate: [0, 5, -3, 0]
-            }}
-            transition={{ 
-              duration: 2.8, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            className="text-accent-purple shrink-0"
-          >
-            <Rocket size={20} className="transform -rotate-12" />
-          </motion.div>
-          <div className="flex items-center gap-1.5">
-            <span>AFTER</span>
-            <span className="text-neutral-400 font-light">STARTUPS</span>
-          </div>
+        <a href="/#hero" className="flex items-center hover:opacity-90 transition-opacity" aria-label="After Startups, inicio">
+          <img src="/logo/lockup-white.svg" alt="After Startups" width={113} height={38} className="h-9 md:h-10 w-auto" />
         </a>
 
         {/* Desktop Menu */}
@@ -324,9 +312,9 @@ const HeroSection = () => {
         {/* H1 Heading */}
         <Reveal delay={0.2}>
           <h1 className="hero-heading font-black tracking-tight uppercase leading-[1.05] max-w-4xl text-center mb-8" style={{ fontSize: 'clamp(2.2rem, 6.2vw, 5.5rem)' }}>
-            We build brands.<br />
-            We create products.<br />
-            We <span className="text-gradient">accelerate growth</span>.
+            Construimos marcas.<br />
+            Creamos productos.<br />
+            Aceleramos tu <span className="text-gradient">crecimiento</span>.
           </h1>
         </Reveal>
 
@@ -893,7 +881,7 @@ const ContactSection = () => {
 *Mensaje:* ${formData.message || 'Sin mensaje adicional'}`;
 
       const encodedMessage = encodeURIComponent(textMessage);
-      const whatsappUrl = `https://wa.me/5218123997318?text=${encodedMessage}`;
+      const whatsappUrl = `${WHATSAPP_URL}?text=${encodedMessage}`;
 
       // Open WhatsApp link in a new window/tab
       window.open(whatsappUrl, '_blank');
@@ -931,9 +919,9 @@ const ContactSection = () => {
             </p>
 
             <div className="flex flex-col gap-4 text-xs font-semibold uppercase tracking-wider text-neutral-300">
-              <a href="mailto:hello@afterstartups.agency" className="flex items-center gap-3 hover:text-accent-purple transition-colors">
-                <Mail size={16} className="text-accent-purple" />
-                <span>hello@afterstartups.agency</span>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-accent-purple transition-colors">
+                <MessageCircle size={16} className="text-accent-purple" />
+                <span>WhatsApp · {WHATSAPP_DISPLAY}</span>
               </a>
               <div className="flex items-center gap-3">
                 <Calendar size={16} className="text-accent-purple" />
@@ -997,6 +985,10 @@ const ContactSection = () => {
                         Agendar Consultoría Estratégica
                       </button>
                     </Magnetic>
+                    <p className="text-[10px] text-neutral-500 leading-relaxed text-center">
+                      Al enviar aceptas nuestro{' '}
+                      <a href="/aviso-de-privacidad" target="_blank" className="underline hover:text-white transition-colors">aviso de privacidad</a>.
+                    </p>
                   </motion.form>
                 ) : (
                   <motion.div 
@@ -1030,9 +1022,15 @@ const ContactSection = () => {
               Branding · Growth · AI · Digital Products.
             </span>
           </div>
-          <div className="flex gap-4">
-            <a href="mailto:hello@afterstartups.agency" className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">
-              hello@afterstartups.agency
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">
+              WhatsApp
+            </a>
+            <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">
+              Facebook
+            </a>
+            <a href="/aviso-de-privacidad" className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">
+              Aviso de privacidad
             </a>
           </div>
         </footer>
