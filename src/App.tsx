@@ -552,7 +552,7 @@ const EnfoqueSection = () => {
     { icon: <Factory size={22} />, name: 'Industria y acero', desc: 'Sitios que convierten visitas en cotizaciones para venta B2B y mayoreo.', cliente: 'Sur Steel' },
     { icon: <Mountain size={22} />, name: 'Turismo y experiencias', desc: 'Posicionamiento y campañas para atraer viajeros y reservas.', cliente: 'Ecoprojects' },
     { icon: <Scissors size={22} />, name: 'Servicios y belleza', desc: 'Sistemas de reservaciones, CRM y agenda automatizada.', cliente: 'Men & Boys' },
-    { icon: <Music size={22} />, name: 'Música y entretenimiento', desc: 'Press kits digitales y marca personal para booking.', cliente: 'DJ Lu Valenzuela' },
+    { icon: <Music size={22} />, name: 'Música y entretenimiento', desc: 'Plataformas de eventos y boletos, press kits digitales y marca para la escena musical.', cliente: 'Cascada Life · DJ Lu' },
     { icon: <Store size={22} />, name: 'Comercio y marcas locales', desc: 'Paid media y contenido para generar clientes potenciales.', cliente: 'Print Cards' },
   ];
 
@@ -634,6 +634,14 @@ const ProjectsSection = () => {
       image: '/sursteel_web.png',
       imagePosition: 'left center',
       link: 'https://www.sursteel.com.mx/'
+    },
+    {
+      name: 'Cascada Life',
+      category: 'Plataforma Web / Música y Eventos',
+      desc: 'Rediseño del sitio de una comunidad de música electrónica en Monterrey: cartelera de eventos, archivo multimedia, panel de socios y experiencia de boletos.',
+      image: '/cascada_web.png',
+      imagePosition: 'left center',
+      link: 'https://www.cascada.life/'
     },
     {
       name: 'EcoSuites',
