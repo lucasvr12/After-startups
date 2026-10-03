@@ -172,10 +172,10 @@ const Navbar = () => {
   }, []);
 
   const links = [
+    { name: 'Proyectos', href: '#projects' },
     { name: 'Manifiesto', href: '#manifesto' },
     { name: 'Capacidades', href: '#capacidades' },
     { name: 'Enfoque', href: '#enfoque' },
-    { name: 'Proyectos', href: '#projects' },
     { name: 'Proceso', href: '#proceso' },
   ];
 
@@ -1092,10 +1092,10 @@ function App() {
     <main className="w-full bg-[#0A0A0A] text-[#D7E2EA] antialiased overflow-x-hidden selection:bg-accent-purple selection:text-white">
       <Navbar />
       <HeroSection />
+      <ProjectsSection />
       <ManifestoSection />
       <CapacidadesSection />
       <EnfoqueSection />
-      <ProjectsSection />
       <ProcesoSection />
       <ContactSection />
       <Promo />

@@ -145,8 +145,18 @@ function Promo() {
 
                 <Slots />
 
-                <div className="mt-7 flex items-end gap-2">
-                  <span className="text-5xl font-black text-white tracking-tight">${PROMO.price.toLocaleString('es-MX')}</span>
+                <div className="mt-7 flex flex-wrap items-center gap-3">
+                  <span className="text-xl font-bold text-neutral-500 line-through decoration-accent-orange decoration-2">
+                    <span className="sr-only">Precio normal: </span>${PROMO.originalPrice.toLocaleString('es-MX')}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-full bg-accent-orange/15 border border-accent-orange/30 text-[10px] font-bold uppercase tracking-widest text-accent-orange">
+                    Ahorras ${(PROMO.originalPrice - PROMO.price).toLocaleString('es-MX')}
+                  </span>
+                </div>
+                <div className="mt-1 flex items-end gap-2">
+                  <span className="text-5xl font-black text-white tracking-tight">
+                    <span className="sr-only">Precio de promoción: </span>${PROMO.price.toLocaleString('es-MX')}
+                  </span>
                   <span className="text-xs uppercase tracking-widest text-neutral-400 font-semibold pb-2">MXN · {PROMO.month}</span>
                 </div>
 

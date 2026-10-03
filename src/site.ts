@@ -8,6 +8,7 @@ export const FACEBOOK_URL = 'https://www.facebook.com/AfterStartups/';
 // El popup se oculta solo al agotarse los lugares o al pasar `endsAt`.
 export const PROMO = {
   month: 'Octubre',
+  originalPrice: 12899,
   price: 8000,
   total: 10,
   taken: 3,
