@@ -20,7 +20,6 @@ import {
   Music,
   Palette,
   Scissors,
-  Smartphone,
   Sparkles,
   Store,
   TrendingUp,
@@ -401,6 +400,12 @@ const adServices = [
   { icon: Bot, tag: 'Automatización', title: 'Del anuncio a WhatsApp', desc: 'Campañas conectadas con un asistente de IA que responde, resuelve dudas y agenda citas en segundos.' },
 ];
 
+const conceptos = [
+  { src: '/conceptos/cocacola.webp', title: 'Bebida · Impacto 3D', format: 'Concepto · Historia 9:16' },
+  { src: '/conceptos/cerave.jpg', title: 'Skincare · Beneficios', format: 'Concepto · Póster de producto' },
+  { src: '/conceptos/kevorix.webp', title: 'Moda · Oferta de valor', format: 'Concepto · Anuncio de catálogo' },
+];
+
 const CreativosSection = () => (
   <section id="creativos" className="w-full bg-obsidian py-24 relative overflow-hidden scroll-mt-20">
     <div className="pointer-events-none absolute top-1/3 -left-32 w-[550px] h-[550px] bg-primary-container/15 blur-[160px] rounded-full"></div>
@@ -420,56 +425,56 @@ const CreativosSection = () => (
       </Reveal>
 
       <Reveal>
-        <div className="relative group rounded-2xl overflow-hidden border border-highlight/70 shadow-[0_20px_60px_rgba(192,38,211,0.3)] bg-raised">
-          <img src="/stitch/ads-montage.jpg" alt="Referencias de estilo de anuncios para redes sociales" className="w-full h-64 sm:h-auto object-cover group-hover:scale-[1.01] transition-transform duration-700" />
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/40 to-transparent pointer-events-none"></div>
-          <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-obsidian/90 text-crisp font-label text-[11px] font-bold uppercase tracking-wider backdrop-blur-md border border-subtle">
-            Referencias de estilo · imágenes ilustrativas
-          </span>
-          <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 p-4 sm:p-5 rounded-xl bg-glass border border-subtle backdrop-blur-md">
-            <h3 className="font-display text-lg text-crisp font-bold">Campañas multicanal de conversión directa</h3>
-            <p className="text-[13px] text-muted">Variaciones para Meta Ads, Instagram Stories y Reels, con ganchos y llamados a la acción pensados para tu cliente.</p>
+        <div className="rounded-2xl border border-highlight/70 bg-raised p-5 md:p-8 shadow-[0_20px_60px_rgba(192,38,211,0.3)]">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div>
+              <span className="font-label text-xs text-crisp font-bold uppercase tracking-wider flex items-center gap-2">
+                <Sparkles size={16} className="text-primary" /> Conceptos de dirección de arte
+              </span>
+              <h3 className="mt-2 font-display text-[22px] leading-7 text-crisp font-bold">Así pensamos un anuncio: producto, gancho y llamado a la acción.</h3>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-primary-container/20 text-primary font-label text-[11px] font-bold uppercase tracking-wider self-start md:self-auto">
+              Producción propia
+            </span>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {conceptos.map((c) => (
+              <figure key={c.src} className="group relative rounded-xl overflow-hidden border border-subtle hover:border-primary/40 transition-colors bg-container-lowest">
+                <img src={c.src} alt={`Concepto de anuncio: ${c.title}`} loading="lazy" className="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-500" />
+                <figcaption className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-lg bg-obsidian/85 backdrop-blur-md border border-subtle">
+                  <span className="block font-display text-sm text-crisp font-bold">{c.title}</span>
+                  <span className="block font-label text-[11px] text-muted uppercase tracking-wider">{c.format}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="mt-4 text-[11px] text-muted">
+            Piezas conceptuales de dirección de arte creadas por After Startups como ejercicio creativo. Sin afiliación con las marcas mostradas; las marcas pertenecen a sus respectivos dueños.
+          </p>
         </div>
       </Reveal>
 
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Reveal>
-          <div className="h-full rounded-2xl bg-raised border border-highlight/60 p-6 flex flex-col gap-4 shadow-xl group">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-label text-xs text-crisp font-bold uppercase tracking-wider flex items-center gap-2">
-                <Smartphone size={18} className="text-primary" /> Formato vertical 9:16
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary font-label text-[11px] font-bold">Ilustrativo</span>
-            </div>
-            <div className="relative rounded-xl overflow-hidden border border-subtle group-hover:border-primary/40 transition-colors">
-              <img src="/stitch/ads-vertical.jpg" alt="Ejemplo ilustrativo de anuncios verticales para Reels y TikTok" className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-500" />
-            </div>
-            <h3 className="font-display text-lg text-crisp font-bold">Anuncios nativos para Reels, Historias y TikTok</h3>
-            <p className="text-[13px] text-muted leading-relaxed">Piezas diseñadas para verse como contenido, no como publicidad: producto en uso, beneficios claros y un llamado a escribir por WhatsApp.</p>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.1}>
-          <div className="h-full rounded-2xl bg-raised border border-highlight/60 p-6 flex flex-col gap-4 shadow-xl group">
+      <Reveal>
+        <div className="mt-8 rounded-2xl bg-raised border border-highlight/60 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center shadow-xl group">
+          <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center justify-between gap-3">
               <span className="font-label text-xs text-crisp font-bold uppercase tracking-wider flex items-center gap-2">
                 <Megaphone size={18} className="text-secondary" /> Caso real · Print Cards
               </span>
               <span className="px-2.5 py-0.5 rounded-full bg-secondary/15 text-secondary font-label text-[11px] font-bold">Cliente activo</span>
             </div>
-            <div className="grid grid-cols-2 gap-3 h-80 sm:h-96">
-              {['/print_cards_ig1.png', '/print_cards_ig2.png'].map((src, i) => (
-                <div key={src} className="rounded-xl overflow-hidden border border-subtle group-hover:border-secondary/40 transition-colors bg-container-lowest">
-                  <img src={src} alt={i === 0 ? 'Perfil de Instagram de Print Cards' : 'Feed de Instagram de Print Cards'} className="w-full h-full object-cover object-top" />
-                </div>
-              ))}
-            </div>
-            <h3 className="font-display text-lg text-crisp font-bold">Contenido y pauta para generar clientes</h3>
-            <p className="text-[13px] text-muted leading-relaxed">Gestión de campañas en Meta y contenido para Instagram enfocados en conseguir clientes potenciales para una marca local.</p>
+            <h3 className="font-display text-[22px] leading-7 text-crisp font-bold">Contenido y pauta para generar clientes</h3>
+            <p className="text-[15px] text-muted leading-relaxed">Gestión de campañas en Meta y contenido para Instagram enfocados en conseguir clientes potenciales para una marca local.</p>
           </div>
-        </Reveal>
-      </div>
+          <div className="lg:col-span-7 grid grid-cols-2 gap-3 h-72 sm:h-96">
+            {['/print_cards_ig1.png', '/print_cards_ig2.png'].map((src, i) => (
+              <div key={src} className="rounded-xl overflow-hidden border border-subtle group-hover:border-secondary/40 transition-colors bg-container-lowest">
+                <img src={src} alt={i === 0 ? 'Perfil de Instagram de Print Cards' : 'Feed de Instagram de Print Cards'} className="w-full h-full object-cover object-top" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Reveal>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         {adServices.map((s, i) => (
