@@ -400,6 +400,14 @@ const adServices = [
   { icon: Bot, tag: 'Automatización', title: 'Del anuncio a WhatsApp', desc: 'Campañas conectadas con un asistente de IA que responde, resuelve dudas y agenda citas en segundos.' },
 ];
 
+const trabajosClientes = [
+  { src: '/clientes/patio-barrio-halloween.jpg', cliente: 'Patio Barrio', pieza: 'Flyer de evento · Historia', w: 1116, h: 2000 },
+  { src: '/clientes/blu-terraza.webp', cliente: 'Blü Terraza', pieza: 'Promo semanal · Post 4:5', w: 1600, h: 2000 },
+  { src: '/clientes/terraza-esfera.webp', cliente: 'Terraza Esfera', pieza: 'Promo 2x1 · Historia', w: 1119, h: 2000 },
+  { src: '/clientes/sursteel-operacion.webp', cliente: 'Sur Steel', pieza: 'Contenido de marca · Post 1:1', w: 1080, h: 1080 },
+  { src: '/clientes/dola-accesorios.webp', cliente: 'Dola AI Accesorios', pieza: 'Campaña de producto · Historia', w: 1125, h: 2000 },
+];
+
 const conceptos = [
   { src: '/conceptos/cocacola.webp', title: 'Bebida · Impacto 3D', format: 'Concepto · Historia 9:16' },
   { src: '/conceptos/cerave.jpg', title: 'Skincare · Beneficios', format: 'Concepto · Póster de producto' },
@@ -421,6 +429,35 @@ const CreativosSection = () => (
           <p className="text-base md:text-lg text-muted mt-3">
             Combinamos dirección de arte, diseño de producto y psicología de respuesta directa para convertir atención en mensajes, cotizaciones y ventas.
           </p>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="rounded-2xl border border-secondary/40 bg-raised p-5 md:p-8 shadow-[0_20px_60px_rgba(78,222,163,0.12)] mb-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div>
+              <span className="font-label text-xs text-crisp font-bold uppercase tracking-wider flex items-center gap-2">
+                <BadgeCheck size={16} className="text-secondary" /> Trabajo real para clientes
+              </span>
+              <h3 className="mt-2 font-display text-[22px] leading-7 text-crisp font-bold">Flyers, historias y posts que hoy circulan en redes.</h3>
+            </div>
+            <span className="font-label text-[11px] text-muted uppercase tracking-wider flex items-center gap-1.5 self-start md:self-auto">
+              Desliza <ArrowRight size={14} />
+            </span>
+          </div>
+          <div className="-mx-5 md:-mx-8 px-5 md:px-8 flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-px-5 md:scroll-px-8 pb-3 [scrollbar-width:thin]">
+            {trabajosClientes.map((t) => (
+              <figure key={t.src} className="snap-start shrink-0 group">
+                <div className="h-[420px] sm:h-[520px] rounded-xl overflow-hidden border border-subtle group-hover:border-secondary/50 transition-colors bg-container-lowest">
+                  <img src={t.src} alt={`${t.cliente}: ${t.pieza}`} loading="lazy" width={t.w} height={t.h} className="h-full w-auto max-w-none" />
+                </div>
+                <figcaption className="mt-3">
+                  <span className="block font-display text-sm text-crisp font-bold">{t.cliente}</span>
+                  <span className="block font-label text-[11px] text-muted uppercase tracking-wider">{t.pieza}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
       </Reveal>
 
