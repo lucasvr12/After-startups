@@ -71,7 +71,7 @@ function PrivacyPage() {
 
           <Section title="2. Datos que recabamos">
             <p>Cuando llenas el formulario de contacto, recabamos únicamente:</p>
-            <List items={['Nombre completo.', 'Correo electrónico.', 'La información que decidas compartirnos sobre tu proyecto.']} />
+            <List items={['Nombre completo.', 'Número de WhatsApp.', 'Nombre de tu empresa o proyecto (opcional).', 'El objetivo que nos indiques.']} />
             <p>
               Al enviar el formulario, estos datos se envían como mensaje a nuestro WhatsApp. También recibimos los datos
               que nos compartas directamente por WhatsApp o redes sociales. No solicitamos datos personales sensibles ni

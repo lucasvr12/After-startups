@@ -1,22 +1,10 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Bot, CalendarDays, Megaphone, Zap, X } from 'lucide-react';
-import { PROMO, WHATSAPP_URL } from './site';
+import { ArrowRight, Zap, X } from 'lucide-react';
+import { PROMO } from './site';
+import { isPromoActive, promoIncludes, promoWhatsappLink, remaining } from './promoData';
 
 const SEEN_KEY = 'promo-flash-octubre-visto';
-
-const includes = [
-  { icon: <Bot size={16} />, text: 'Configuración de IA que responde los mensajes de tu Facebook.' },
-  { icon: <Megaphone size={16} />, text: 'Creación de anuncios (la pauta publicitaria la pones tú).' },
-  { icon: <CalendarDays size={16} />, text: '3 posts por semana durante 3 semanas.' },
-];
-
-const remaining = Math.max(PROMO.total - PROMO.taken, 0);
-const isActive = () => remaining > 0 && Date.now() < new Date(PROMO.endsAt).getTime();
-
-const whatsappLink = `${WHATSAPP_URL}?text=${encodeURIComponent(
-  `Hola, quiero apartar mi lugar en la Promoción Flash de octubre ($${PROMO.price.toLocaleString('es-MX')} MXN).`,
-)}`;
 
 function readSeen() {
   try {
@@ -35,7 +23,7 @@ function markSeen() {
 }
 
 // Fila de lugares: los ocupados se van llenando uno por uno al abrir el popup.
-const Slots = () => {
+export const Slots = () => {
   const reduce = useReducedMotion();
   return (
     <div className="flex gap-1.5" aria-hidden>
@@ -61,7 +49,7 @@ const Slots = () => {
 
 function Promo() {
   const [open, setOpen] = useState(false);
-  const [active] = useState(isActive);
+  const [active] = useState(isPromoActive);
 
   // Se abre solo una vez por visita, unos segundos después de cargar.
   useEffect(() => {
@@ -161,16 +149,16 @@ function Promo() {
                 </div>
 
                 <ul className="mt-6 flex flex-col gap-3 border-t border-white/5 pt-6">
-                  {includes.map((item) => (
+                  {promoIncludes.map((item) => (
                     <li key={item.text} className="flex items-start gap-3 text-sm text-neutral-300 font-light leading-snug">
-                      <span className="p-1.5 rounded-lg bg-accent-purple/15 text-accent-purple shrink-0">{item.icon}</span>
+                      <span className="p-1.5 rounded-lg bg-accent-purple/15 text-accent-purple shrink-0"><item.icon size={16} /></span>
                       <span className="pt-1">{item.text}</span>
                     </li>
                   ))}
                 </ul>
 
                 <a
-                  href={whatsappLink}
+                  href={promoWhatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group mt-8 w-full inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-accent-purple to-accent-violet hover:brightness-110 border border-white/20 text-white font-bold uppercase tracking-widest text-xs py-4 shadow-[0_0_30px_rgba(182,0,168,0.3)] transition-all"
